@@ -1,0 +1,18 @@
+{
+  "name": "Backlog — PlayStation Planner",
+  "short_name": "Backlog",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0b0f18",
+  "theme_color": "#101522",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "description": "Backlog PlayStation, planning 2027 et journal de sessions, en local."
+}
