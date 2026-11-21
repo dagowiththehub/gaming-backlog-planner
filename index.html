@@ -2,30 +2,25 @@
 <html lang="fr"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#e60012"><meta name="description" content="Ton backlog PlayStation, ton planning et ton gaming diary, en local.">
-<link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon.svg"><link rel="stylesheet" href="styles.css"><title>Phantom Backlog — v1.0</title>
+<link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon.svg"><link rel="stylesheet" href="styles.css"><title>Phantom Backlog — v1.1</title>
 </head><body><div class="app-shell">
 <header class="topbar"><a class="brand" href="#"><span class="brand-mark">B</span><span>PHANTOM<span class="brand-dot">.</span></span></a><div class="top-actions"><span class="local-pill"><i></i> 100 % LOCAL</span><button class="icon-btn" id="rawgSettingsBtn" title="Configurer RAWG">⚙</button><button class="icon-btn" id="exportBtn" title="Exporter">⇧</button><button class="icon-btn" id="importBtn" title="Importer">⇩</button></div></header>
 <main>
-<section class="hero"><div><p class="eyebrow">PLAYSTATION GAMING HUB</p><h1>Ton année.<br><span>Ton backlog.</span></h1><p class="hero-sub">Organise ta bibliothèque PlayStation, planifie tes prochaines parties et garde une trace de chaque session. Gratuit, sans compte et stocké sur ton appareil.</p><button class="primary-btn" id="heroAdd">＋ Ajouter un jeu</button></div><div class="hero-orb"><div class="orb-ring"></div><div class="orb-core">PLAY<br>STATION<br>DIARY</div></div></section>
-<section class="stats-grid">
-<article class="stat-card"><span class="stat-label">BIBLIOTHÈQUE</span><strong id="statTotal">0</strong><span class="stat-foot">jeux PlayStation</span></article>
-<article class="stat-card"><span class="stat-label">TERMINÉS CETTE ANNÉE</span><strong id="statDone">0</strong><span class="stat-foot">jeux complétés</span></article>
-<article class="stat-card"><span class="stat-label">SESSIONS CETTE ANNÉE</span><strong id="statSessions">0</strong><span class="stat-foot">entrées dans le diary</span></article>
-<article class="stat-card"><span class="stat-label">TEMPS JOUÉ CETTE ANNÉE</span><strong id="statHours">0<span class="unit">h</span></strong><span class="stat-foot">heures enregistrées</span></article>
-</section>
+
+
 <nav class="tabs">
 <button class="tab active" data-tab="home">Accueil</button><button class="tab" data-tab="library">Bibliothèque</button><button class="tab" data-tab="priority">Priorités</button><button class="tab" data-tab="planner">Planning</button><button class="tab" data-tab="diary">Journal</button><button class="tab" data-tab="annual">Bilan annuel</button><button class="tab" data-tab="psplus">PS Plus</button>
 </nav>
 <section id="homePanel" class="panel active">
 <div class="section-heading"><div><p class="eyebrow">TA BASE DES PHANTOM THIEVES</p><h2>Mission du moment</h2></div><button class="primary-btn" id="homeQuickSession">＋ Logger une session</button></div>
-<div class="home-grid"><div class="home-feature"><p class="eyebrow">EN COURS</p><div id="homeCurrent"></div></div><div class="home-side"><div class="home-kpi"><span>OBJECTIF DU MOIS</span><strong id="homeMonthlyGoal">0 / 0 h</strong><div class="progress-track"><div id="homeMonthlyProgress"></div></div></div><div class="home-kpi"><span>JEUX TERMINÉS CETTE ANNÉE</span><strong id="homeDone">0</strong></div><div class="home-kpi"><span>PROCHAINE PRIORITÉ</span><strong id="homeNext">Aucun jeu</strong></div></div></div>
+<div class="home-grid"><div class="home-feature"><p class="eyebrow">EN COURS</p><div id="homeCurrent"></div></div><div class="home-side"><div class="home-kpi"><span>PLANNING DU MOIS</span><strong id="homeMonthlyGoal">0 / 0 h</strong><div class="progress-track"><div id="homeMonthlyProgress"></div></div><small id="homeMonthlyCaption">Heures jouées / heures planifiées</small></div><div class="home-kpi"><span>JEUX TERMINÉS CETTE ANNÉE</span><strong id="homeDone">0</strong></div><div class="home-kpi"><span>PROCHAINE PRIORITÉ</span><div id="homeNext"></div></div></div></div>
 <div class="section-heading compact"><div><p class="eyebrow">APERÇU</p><h2>Ton année en cours</h2></div><button class="secondary-btn" id="homeGoAnnual">Voir le bilan ↗</button></div><div id="homeStats" class="stats-grid"></div>
 </section>
-<section id="priorityPanel" class="panel"><div class="section-heading"><div><p class="eyebrow">TA PROCHAINE AVENTURE</p><h2>Ordre de mission</h2><p class="small-note">Glisse les jaquettes pour définir ton ordre de priorité.</p></div></div><div id="priorityList" class="priority-list"></div></section>
-<section id="libraryPanel" class="panel active">
+<section id="priorityPanel" class="panel"><div class="section-heading"><div><p class="eyebrow">TA PROCHAINE AVENTURE</p><h2>Ordre de mission</h2><p class="small-note">Priorité Haute / Normale / Basse, puis glisse les jeux pour affiner ton ordre.</p><select id="priorityFilter"><option value="Toutes">Toutes les priorités</option><option>Haute</option><option>Normale</option><option>Basse</option></select></div></div><div id="priorityList" class="priority-list"></div></section>
+<section id="libraryPanel" class="panel">
 <div class="section-heading"><div><p class="eyebrow">TA COLLECTION</p><h2>Bibliothèque PlayStation</h2></div><button class="secondary-btn" id="addBtn">＋ Nouveau jeu</button></div>
 <div class="toolbar"><label class="search-wrap"><span>⌕</span><input id="searchInput" placeholder="Rechercher un jeu..."></label><select id="statusFilter"><option value="Tous">Tous les statuts</option><option>À jouer</option><option>En cours</option><option>En pause</option><option>Terminé</option><option>Abandonné</option></select><select id="platformFilter"><option value="Toutes">PS5 + PS4</option><option>PS5</option><option>PS4</option></select><button class="secondary-btn" id="rawgLibraryBtn">⌕ Rechercher un jeu</button></div>
-<div id="gameGrid" class="game-grid"></div><section id="emptyState" class="empty-state"><div class="empty-icon">＋</div><h3>Ta bibliothèque commence ici.</h3><p>Ajoute tes jeux, y compris ceux que tu as déjà terminés.</p><button class="primary-btn" id="emptyAdd">Ajouter mon premier jeu</button></section>
+<div id="librarySections" class="library-sections"></div><div id="gameGrid" class="game-grid" hidden></div><section id="emptyState" class="empty-state"><div class="empty-icon">＋</div><h3>Ta bibliothèque commence ici.</h3><p>Ajoute tes jeux, y compris ceux que tu as déjà terminés.</p><button class="primary-btn" id="emptyAdd">Ajouter mon premier jeu</button></section>
 </section>
 <section id="plannerPanel" class="panel">
 <div class="section-heading"><div><p class="eyebrow">JANVIER → DÉCEMBRE</p><h2>Mon planning</h2></div><button class="secondary-btn" id="planGameBtn">＋ Planifier un jeu</button></div>
@@ -44,7 +39,7 @@
 <div id="annualStats" class="stats-grid"></div>
 <div class="section-heading compact"><div><p class="eyebrow">HALL OF FAME</p><h2>Classement de l'année</h2></div><button class="secondary-btn" id="annualAdd">＋ Ajouter un jeu terminé</button></div>
 <div id="annualRanking" class="annual-ranking"></div>
-<div class="section-heading compact"><div><p class="eyebrow">TES SUCCÈS PERSONNELS</p><h2>Achievements</h2></div></div><div id="achievements" class="achievement-grid"></div>
+
 <div class="section-heading compact"><div><p class="eyebrow">ÉVOLUTION</p><h2>Heures jouées par mois</h2></div></div><div id="annualChart" class="annual-chart"></div>
 </section>
 <section id="psplusPanel" class="panel">
@@ -53,11 +48,7 @@
 <p class="small-note">Format CSV conseillé : <code>title,platform,tier,cover</code>. Format JSON : un tableau d'objets avec ces mêmes propriétés. L'import ne contacte aucun service externe.</p></div>
 <div class="section-heading compact"><div><p class="eyebrow">TES JEUX IMPORTÉS</p><h2>Catalogue local</h2></div></div><div id="psplusGrid" class="game-grid"></div>
 </section>
-<section id="goalsPanel" class="panel">
-<div class="section-heading"><div><p class="eyebrow">CHALLENGE ANNUEL</p><h2>Objectifs annuels</h2></div></div>
-<div class="goal-card"><p class="eyebrow">TON OBJECTIF DE JEUX TERMINÉS</p><h3>Combien de jeux veux-tu finir cette année ?</h3><div class="goal-input"><input id="goalTarget" type="number" min="1" max="200" value="20"><span>jeux</span><button class="primary-btn" id="saveGoal">Enregistrer</button></div><div class="progress-track"><div id="goalProgress"></div></div><div class="goal-bottom"><strong id="goalCount">0 / 20</strong><span id="goalPercent">0 %</span></div></div>
-<div class="goal-card secondary-goal"><p class="eyebrow">TON TEMPS DE JEU</p><h3>Objectif d'heures cette année</h3><div class="goal-input"><input id="hourTarget" type="number" min="1" max="5000" value="300"><span>heures</span><button class="primary-btn" id="saveHourGoal">Enregistrer</button></div><div class="progress-track"><div id="hourProgress"></div></div><div class="goal-bottom"><strong id="hourCount">0 / 300 h</strong><span id="hourPercent">0 %</span></div></div>
-</section>
+
 </main><footer><span>BACKLOG<span class="brand-dot">.</span></span><span>TES JEUX. TON RYTHME.</span><span class="rawg-credit">Jeux & jaquettes : <a href="https://rawg.io" target="_blank" rel="noreferrer">RAWG</a></span></footer></div>
 <dialog id="gameDialog"><form id="gameForm"><div class="dialog-head"><div><p class="eyebrow">PHANTOM GAME DATABASE</p><h2 id="gameDialogTitle">Ajouter un jeu</h2></div><button type="button" class="close-btn" id="closeGame">×</button></div>
 <input type="hidden" id="gameId">

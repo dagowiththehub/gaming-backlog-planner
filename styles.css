@@ -80,3 +80,26 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);border-c
 .chart-month i{display:block;height:100%;background:var(--accent)}
 .chart-month b{text-align:right}
 @media(max-width:650px){.home-grid{grid-template-columns:1fr}.achievement-grid{grid-template-columns:1fr}.priority-card{gap:8px}.priority-cover{width:48px;height:64px}.priority-card .secondary-btn{padding:7px}.tabs{margin:0 -14px;padding:9px 14px}.hero{padding:24px 18px}.monthly-goal-box{align-items:stretch}.monthly-goal-box label{width:100%}}
+
+/* v1.1 usability pass */
+.hero{display:none!important}
+body>.app-shell>main>.stats-grid{display:none!important}
+.home-feature,.home-kpi{min-width:0}
+.next-priority{display:flex;align-items:center;gap:12px;cursor:pointer}
+.next-priority-cover{width:58px;height:78px;flex:none;background:#333 center/cover;border:1px solid #666;display:grid;place-items:center;font-weight:900}
+.next-priority small{display:block;color:#aaa;font-size:11px;margin-top:5px}
+.library-status-section{margin:24px 0 30px}
+.library-status-section>h3{font-size:22px;text-transform:uppercase;font-style:italic;border-bottom:2px solid var(--accent);padding-bottom:8px}
+.library-status-section>h3 span{font-size:13px;color:#ff5362;margin-left:8px}
+.library-source-group{margin:16px 0}
+.library-source-group h4{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:#aaa;margin:0 0 10px}
+.library-source-group .game-grid{display:grid}
+.priority-level{display:inline-block;margin-top:6px;padding:3px 7px;font-size:9px;font-weight:900;text-transform:uppercase;border:1px solid #777}
+.priority-haute{background:#4b1018;border-color:#f34;color:#ff7c88}
+.priority-normale{background:#282830;color:#ddd}
+.priority-basse{background:#172b38;border-color:#4387a8;color:#8ed7ff}
+.plan-entry{display:flex;align-items:center;gap:10px}
+.plan-game-cover,.session-game-cover{width:42px;height:58px;flex:none;background:#333 center/cover;border:1px solid #555}
+.session-entry{display:flex;align-items:center;gap:10px}
+.session-entry>div:nth-child(2){flex:1;min-width:0}
+@media(max-width:650px){.home-grid{grid-template-columns:1fr}.home-feature{padding:14px}.home-kpi{padding:13px}.library-status-section>h3{font-size:19px}}

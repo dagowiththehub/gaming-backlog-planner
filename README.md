@@ -1,22 +1,21 @@
-# Gaming Backlog Planner v1.0
+# Gaming Backlog Planner v1.1
 
-PWA locale de suivi de bibliothèque PlayStation PS4/PS5, planning, journal, objectifs, priorités et bilan annuel.
+## Mise à jour
+1. Exporter d'abord les données depuis l'application actuelle (JSON).
+2. Décompresser cette archive.
+3. Téléverser les 7 fichiers dans la racine du dépôt GitHub, en remplaçant les précédents.
+4. Commit, attendre le déploiement GitHub Pages, puis ouvrir le site dans Chrome et actualiser.
+5. Relancer la PWA installée.
 
-## Installation / mise à jour GitHub Pages
-1. Décompresser l'archive.
-2. Ouvrir le dépôt GitHub du projet.
-3. Dans la racine du dépôt, téléverser les 7 fichiers : `index.html`, `styles.css`, `app.js`, `manifest.webmanifest`, `sw.js`, `icon.svg`, `README.md`.
-4. Remplacer les fichiers existants et valider le commit.
-5. Attendre la fin du déploiement GitHub Pages.
-6. Ouvrir l'URL Pages dans Chrome, actualiser, puis relancer l'application installée.
+La v1.1 conserve la clé de stockage locale de la v0.6/v1.0 (`ps-backlog-v5`). Les données existantes sont donc conservées. Faire malgré tout un export JSON avant la mise à jour.
 
-## Données
-- Les données sont conservées localement dans le navigateur.
-- Faire un export JSON depuis le bouton d'export avant la mise à jour.
-- La v1 conserve la clé de stockage de la v0.6 pour assurer la migration.
-- La clé RAWG reste dans le stockage local et n'est pas exportée.
+## Changements v1.1
+- Suppression du grand bandeau décoratif d'accueil et des achievements.
+- Accueil compact, avec jaquette de la prochaine priorité.
+- Enregistrer une session fait automatiquement passer le jeu en « En cours » et renseigne la date de début si elle est vide.
+- Bibliothèque regroupée par statut, puis par jeux possédés / PlayStation Plus.
+- Priorités Haute / Normale / Basse utilisées pour classer les jeux ; glisser-déposer permet aussi de déplacer un jeu entre les niveaux.
+- Suppression de l'objectif mensuel manuel : la progression compare les heures réellement jouées aux heures prévues dans le planning.
+- Jaquettes visibles dans les listes principales (accueil, priorités, planning, journal, bilan).
 
-## Fonctionnalités v1
-Accueil, bibliothèque simplifiée, priorités par glisser-déposer, planning avec jaquettes, objectifs mensuels, journal, bilan annuel, notes /10, succès personnels, historique des statuts, import/export JSON.
-
-Coût : 0 €. Hébergement statique GitHub Pages. Aucune API payante.
+Hébergement GitHub Pages, stockage local, RAWG gratuit : coût 0 €.
