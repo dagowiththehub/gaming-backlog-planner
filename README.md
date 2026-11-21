@@ -1,12 +1,22 @@
-# Gaming Backlog Planner v0.6
+# Gaming Backlog Planner v1.0
 
-Planification du temps par jeu et par mois :
-- Chaque entrée de planning comporte un nombre d'heures prévues.
-- Les cartes mensuelles affichent le total des heures planifiées.
-- Le HLTB restant est calculé après déduction des heures déjà jouées et de toutes les heures planifiées sur les autres mois.
-- Référence automatique : histoire + extras, sinon histoire principale, sinon complétion.
-- Les anciennes entrées sans durée restent présentes et comptent pour 0 h.
-- Les entrées du même jeu et du même mois s'additionnent ; elles sont modifiables et supprimables.
-- Exemple : Crimson Desert 144 h, 30 h planifiées = 114 h restantes ; Persona 5 Royal 122 h, 20 h planifiées = 102 h restantes, avant temps déjà joué.
+PWA locale de suivi de bibliothèque PlayStation PS4/PS5, planning, journal, objectifs, priorités et bilan annuel.
 
-RAWG, bibliothèque, diary, objectifs, données locales et import/export sont conservés.
+## Installation / mise à jour GitHub Pages
+1. Décompresser l'archive.
+2. Ouvrir le dépôt GitHub du projet.
+3. Dans la racine du dépôt, téléverser les 7 fichiers : `index.html`, `styles.css`, `app.js`, `manifest.webmanifest`, `sw.js`, `icon.svg`, `README.md`.
+4. Remplacer les fichiers existants et valider le commit.
+5. Attendre la fin du déploiement GitHub Pages.
+6. Ouvrir l'URL Pages dans Chrome, actualiser, puis relancer l'application installée.
+
+## Données
+- Les données sont conservées localement dans le navigateur.
+- Faire un export JSON depuis le bouton d'export avant la mise à jour.
+- La v1 conserve la clé de stockage de la v0.6 pour assurer la migration.
+- La clé RAWG reste dans le stockage local et n'est pas exportée.
+
+## Fonctionnalités v1
+Accueil, bibliothèque simplifiée, priorités par glisser-déposer, planning avec jaquettes, objectifs mensuels, journal, bilan annuel, notes /10, succès personnels, historique des statuts, import/export JSON.
+
+Coût : 0 €. Hébergement statique GitHub Pages. Aucune API payante.

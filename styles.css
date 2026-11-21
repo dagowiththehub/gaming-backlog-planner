@@ -6,3 +6,77 @@
 .rawg-results{display:grid;gap:9px;margin-top:14px}.rawg-result{display:grid;grid-template-columns:105px 1fr;gap:11px;align-items:center;background:#0c1523;border:1px solid #ffffff12;border-radius:10px;overflow:hidden}.rawg-result img{width:105px;height:88px;object-fit:cover}.rawg-result-info{padding:8px 10px 8px 0;display:grid;gap:6px}.rawg-result-info strong{font-size:12px}.rawg-result-info small{font-size:9px;color:#91a2bb}.rawg-result-info .secondary-btn{justify-self:start;padding:8px 10px}.rawg-credit{font-size:9px;color:#8fa2bb;margin-top:14px}.rawg-credit a{color:#8db7ff}.plan-create-box{margin-top:16px;padding:14px;background:#0c1523;border:1px solid #2b3a52;border-radius:10px}.plan-create-box .eyebrow{margin-bottom:12px}.plan-create-box .secondary-btn{margin-bottom:7px}@media(max-width:720px){.rawg-result{grid-template-columns:88px 1fr}.rawg-result img{width:88px;height:88px}.rawg-result-info strong{font-size:11px}.rawg-result-info .secondary-btn{font-size:9px}}
 
 .month-card-hours{font-weight:700;color:#8db7ff!important}.month-hours-total{font-size:12px;color:#8db7ff;margin-top:5px}.plan-entry{display:flex;align-items:center;gap:12px}.plan-entry>div{display:grid;gap:4px;flex:1;min-width:0}.plan-entry small{display:block}.plan-entry .text-btn{white-space:nowrap}.plan-entry strong{font-size:13px}
+
+/* v1.0 — Phantom-inspired visual system */
+:root{--bg:#0c0c0f;--panel:#17171c;--panel2:#202027;--text:#f7f7f7;--muted:#aaaab4;--line:#34343d;--accent:#ed1024;--accent2:#ff3345;--gold:#f4c542}
+body{background:radial-gradient(ellipse at 80% -10%,#4c0b14 0,transparent 35%),#0b0b0e;color:var(--text)}
+.app-shell{max-width:1240px}
+.topbar{background:#101014eF;border-bottom:2px solid var(--accent);backdrop-filter:blur(12px)}
+.brand-mark{background:var(--accent);transform:skew(-8deg);border-radius:3px}
+.brand,.brand-dot{color:#fff}
+.local-pill{color:#ddd}
+.hero{background:linear-gradient(120deg,#e60012,#8c0713 65%,#1a1115);border:0;clip-path:polygon(0 0,100% 0,100% 88%,97% 100%,0 94%);border-radius:0}
+.hero h1{font-weight:1000;letter-spacing:-.06em;text-transform:uppercase;font-style:italic}
+.hero h1 span{color:#fff;text-shadow:4px 4px #1a1a1a}
+.primary-btn{background:var(--accent);border:1px solid #ff5260;box-shadow:3px 3px 0 #65000a;border-radius:3px;text-transform:uppercase;font-weight:900;letter-spacing:.04em}
+.primary-btn:hover{background:#ff2337;transform:translateY(-1px)}
+.secondary-btn,.icon-btn{border-radius:3px;border:1px solid #555;background:#24242b;color:#fff}
+.tabs{position:sticky;top:0;z-index:10;display:flex;overflow-x:auto;gap:5px;background:#111115;padding:10px 4px;border-bottom:1px solid var(--accent)}
+.tab{white-space:nowrap;border-radius:2px;text-transform:uppercase;font-size:11px;font-weight:900;letter-spacing:.04em}
+.tab.active{background:var(--accent);color:#fff;transform:skew(-5deg)}
+.panel{background:transparent}
+.stat-card,.goal-card,.info-card,.calendar-card,.diary-day,.month-detail,.year-month{background:linear-gradient(145deg,#1d1d24,#121216);border:1px solid #373740;border-radius:5px;box-shadow:4px 4px 0 #050506}
+.stat-card strong{color:#fff;font-style:italic}
+.eyebrow{color:#ff4455;font-weight:900;letter-spacing:.13em}
+.game-card{background:#19191f;border:1px solid #393941;border-radius:4px;overflow:hidden;transition:.15s}
+.game-card:hover{transform:translate(-2px,-2px);box-shadow:4px 4px 0 var(--accent)}
+.game-cover{border-radius:0}
+.dialog-head{border-bottom:2px solid var(--accent)}
+dialog{background:#17171c;color:#fff;border:1px solid #555;border-radius:4px;box-shadow:0 20px 90px #000}
+dialog::backdrop{background:#000c;backdrop-filter:blur(4px)}
+input,select,textarea{background:#0f0f13;color:#fff;border:1px solid #484852;border-radius:3px}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);border-color:var(--accent)}
+.advanced-fields{border:1px solid #41414a;border-radius:4px;padding:12px;margin:14px 0}
+.advanced-fields summary{font-weight:900;text-transform:uppercase;color:#ff5664;cursor:pointer}
+.home-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;margin:16px 0 28px}
+.home-feature,.home-kpi{background:#19191f;border:1px solid #3a3a43;padding:18px;border-radius:4px}
+.home-side{display:grid;gap:10px}
+.home-kpi{display:flex;flex-direction:column;gap:8px}
+.home-kpi span{font-size:10px;color:#ff5362;font-weight:900;letter-spacing:.1em}
+.home-kpi strong{font-size:24px;font-weight:950;font-style:italic}
+.current-game{display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid #383840;cursor:pointer}
+.current-cover,.priority-cover,.annual-cover{width:64px;height:86px;background:#333 center/cover;border:1px solid #555;flex:none;display:grid;place-items:center;font-weight:900}
+.current-game small,.priority-info small,.annual-game small{display:block;color:#aaa;font-size:11px;margin-top:5px}
+.priority-list{display:grid;gap:8px}
+.priority-card{display:flex;align-items:center;gap:12px;padding:10px;background:#19191f;border:1px solid #383840;border-left:4px solid var(--accent);cursor:grab}
+.priority-card.dragging{opacity:.4}
+.priority-number{font-size:23px;font-weight:1000;color:#ff4455;font-style:italic}
+.priority-info{flex:1;min-width:0}
+.priority-info strong{display:block}
+.month-posters{display:flex;gap:6px;margin-top:9px;flex-wrap:wrap}
+.month-poster{position:relative;width:45px;height:62px}
+.month-poster-cover{width:100%;height:100%;background:#333 center/cover;display:grid;place-items:center;font-size:10px;font-weight:900}
+.month-poster span{position:absolute;right:-5px;bottom:-5px;background:#fff;color:#111;border-radius:30px;padding:4px 5px;font-size:9px;font-weight:1000}
+.monthly-goal-box{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#19191f;padding:12px;border:1px solid #383840;margin:12px 0}
+.monthly-goal-box label{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:800}
+.monthly-goal-box input{width:85px}
+.annual-ranking{display:grid;gap:6px}
+.annual-row{display:flex;align-items:center;gap:12px;padding:9px;background:#19191f;border:1px solid #383840}
+.annual-row>b{color:#ff4354;font-size:20px;font-style:italic}
+.annual-cover{width:42px;height:56px}
+.annual-game{flex:1}
+.annual-rating{color:var(--gold)}
+.achievement-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.achievement{display:flex;align-items:center;gap:10px;background:#17171c;border:1px solid #393941;padding:12px;opacity:.55}
+.achievement.unlocked{opacity:1;border-color:#d7aa28;background:linear-gradient(120deg,#342b13,#17171c)}
+.achievement>span{font-size:25px;color:var(--gold)}
+.achievement div{flex:1}
+.achievement strong,.achievement small{display:block}
+.achievement small{font-size:10px;color:#aaa;margin-top:3px}
+.achievement em{font-size:8px;color:var(--gold);font-style:normal;font-weight:900}
+.annual-chart{display:grid;gap:8px;background:#19191f;padding:14px}
+.chart-month{display:grid;grid-template-columns:38px 1fr 48px;align-items:center;gap:8px;font-size:11px}
+.chart-month>div{height:9px;background:#333;border-radius:10px;overflow:hidden}
+.chart-month i{display:block;height:100%;background:var(--accent)}
+.chart-month b{text-align:right}
+@media(max-width:650px){.home-grid{grid-template-columns:1fr}.achievement-grid{grid-template-columns:1fr}.priority-card{gap:8px}.priority-cover{width:48px;height:64px}.priority-card .secondary-btn{padding:7px}.tabs{margin:0 -14px;padding:9px 14px}.hero{padding:24px 18px}.monthly-goal-box{align-items:stretch}.monthly-goal-box label{width:100%}}
