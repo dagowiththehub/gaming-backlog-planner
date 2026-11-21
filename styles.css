@@ -103,3 +103,6 @@ body>.app-shell>main>.stats-grid{display:none!important}
 .session-entry{display:flex;align-items:center;gap:10px}
 .session-entry>div:nth-child(2){flex:1;min-width:0}
 @media(max-width:650px){.home-grid{grid-template-columns:1fr}.home-feature{padding:14px}.home-kpi{padding:13px}.library-status-section>h3{font-size:19px}}
+
+.annual-actions{display:flex;gap:8px;flex-wrap:wrap}
+@media(max-width:520px){.annual-actions{width:100%}.annual-actions button{flex:1}}

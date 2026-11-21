@@ -99,8 +99,27 @@ $("psplusImportBtn").onclick=()=>$("catalogFile").click();$("catalogFile").oncha
 function openRawg(mode){rawgMode=mode;$("rawgSearchInput").value="";$("rawgResults").innerHTML="";$("rawgSearchStatus").textContent=localStorage.getItem(RAWG_KEY)?"Recherche limitée aux jeux PS4 et PS5.":"Configure d'abord ta clé API avec ⚙ en haut.";$("rawgSearchDialog").showModal()}
 async function searchRawg(q){const key=localStorage.getItem(RAWG_KEY);if(!key){$("rawgSearchStatus").textContent="Clé API manquante : clique sur ⚙ pour la renseigner.";return}if(!q.trim())return;$("rawgSearchStatus").textContent="Recherche en cours…";$("rawgResults").innerHTML="";try{const u=new URL("https://api.rawg.io/api/games");u.searchParams.set("key",key);u.searchParams.set("search",q);u.searchParams.set("page_size","15");u.searchParams.set("platforms","18,187");const r=await fetch(u);if(!r.ok)throw new Error(r.status===401||r.status===403?"Clé API invalide ou non autorisée.":`Erreur RAWG (${r.status}).`);const data=await r.json();rawgResults=(data.results||[]).map(x=>{const ps=(x.platforms||[]).map(z=>z.platform?.name||"");return {...x,chosenPlatform:ps.some(p=>/playstation 5/i.test(p))?"PS5":"PS4"}}).filter(x=>x.background_image);$("rawgSearchStatus").textContent=rawgResults.length?`${rawgResults.length} résultats trouvés.`:"Aucun résultat PS4/PS5 trouvé.";renderRawgResults()}catch(err){$("rawgSearchStatus").textContent=err.message||"Erreur de connexion à RAWG."}}
 function renderRawgResults(){$("rawgResults").innerHTML=rawgResults.map((g,i)=>`<article class="rawg-result"><img src="${esc(g.background_image)}" alt="" loading="lazy"><div class="rawg-result-info"><strong>${esc(g.name)}</strong><small>${esc(g.chosenPlatform)} · ${esc(g.released||"Date inconnue")}</small><button type="button" class="secondary-btn" data-rawg-select="${i}">${rawgMode==="plan"?"Ajouter et planifier":"Ajouter à ma bibliothèque"}</button></div></article>`).join("");document.querySelectorAll("[data-rawg-select]").forEach(b=>b.onclick=()=>selectRawg(+b.dataset.rawgSelect))}
-function selectRawg(i){const r=rawgResults[i];if(!r)return;let g=db.games.find(x=>x.title.toLowerCase()===r.name.toLowerCase()&&x.platform===r.chosenPlatform);if(!g){g={id:id(),title:r.name,platform:r.chosenPlatform,status:"À jouer",startedAt:"",statusHistory:[],hours:0,hltb:0,hltbExtras:0,hltbComplete:0,priority:"Normale",genre:(r.genres||[]).map(x=>x.name).join(", "),cover:r.background_image,rating:"",source:"À définir",notes:"Ajouté via RAWG",completedAt:"",rawgId:r.id,rawgSlug:r.slug};db.games.unshift(g)}else{if(!g.cover)g.cover=r.background_image;g.rawgId=g.rawgId||r.id}if(rawgMode==="plan"){const m=$("planMonth").value||`${year}-${String(month+1).padStart(2,"0")}`;db.plans=db.plans.filter(p=>!(p.gameId===g.id&&p.month===m));db.plans.push({id:id(),gameId:g.id,month:m,hours:+$("planHours").value||10,note:$("planNote").value||""});year=+m.slice(0,4);month=+m.slice(5,7)-1;$("planDialog").close()}$("rawgSearchDialog").close();save()}
-$("rawgLibraryBtn").onclick=()=>openRawg("library");$("planSearchRawgBtn").onclick=()=>openRawg("plan");
+function selectRawg(i){
+ const r=rawgResults[i];if(!r)return;
+ if(rawgMode==="annual"){
+   $("annualGameForm").reset();
+   $("annualTitle").value=r.name;
+   $("annualPlatform").value=r.chosenPlatform;
+   $("annualCover").value=r.background_image||"";
+   $("annualHours").value=0;
+   $("annualRating").value="";
+   $("annualDate").value=annualYear===CURRENT_YEAR?dateKey(TODAY):`${annualYear}-12-31`;
+   $("rawgSearchDialog").close();
+   $("annualGameDialog").showModal();
+   return;
+ }
+ let g=db.games.find(x=>x.title.toLowerCase()===r.name.toLowerCase()&&x.platform===r.chosenPlatform);
+ if(!g){g={id:id(),title:r.name,platform:r.chosenPlatform,status:"À jouer",startedAt:"",statusHistory:[],hours:0,hltb:0,hltbExtras:0,hltbComplete:0,priority:"Normale",genre:(r.genres||[]).map(x=>x.name).join(", "),cover:r.background_image,rating:"",source:"À définir",notes:"Ajouté via RAWG",completedAt:"",rawgId:r.id,rawgSlug:r.slug};db.games.unshift(g)}
+ else{if(!g.cover)g.cover=r.background_image;g.rawgId=g.rawgId||r.id}
+ if(rawgMode==="plan"){const m=$("planMonth").value||`${year}-${String(month+1).padStart(2,"0")}`;db.plans=db.plans.filter(p=>!(p.gameId===g.id&&p.month===m));db.plans.push({id:id(),gameId:g.id,month:m,hours:+$("planHours").value||10,note:$("planNote").value||""});year=+m.slice(0,4);month=+m.slice(5,7)-1;$("planDialog").close()}
+ $("rawgSearchDialog").close();save()
+}
+$("rawgLibraryBtn").onclick=()=>openRawg("library");$("planSearchRawgBtn").onclick=()=>openRawg("plan");$("annualSearchRawg").onclick=()=>openRawg("annual");
 $("rawgSettingsBtn").onclick=()=>{$("rawgApiKey").value=localStorage.getItem(RAWG_KEY)||"";$("rawgSettingsDialog").showModal()};
 $("rawgSettingsForm").onsubmit=e=>{e.preventDefault();let k=$("rawgApiKey").value.trim();if(k)localStorage.setItem(RAWG_KEY,k);else localStorage.removeItem(RAWG_KEY);$("rawgSettingsDialog").close();alert(k?"Clé RAWG enregistrée sur cet appareil.":"Clé RAWG supprimée.")};
 $("closeRawgSettings").onclick=$("cancelRawgSettings").onclick=()=>$("rawgSettingsDialog").close();
