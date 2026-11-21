@@ -1,7 +1,7 @@
 const KEY="ps-backlog-v5", RAWG_KEY="ps-backlog-rawg-key", $=id=>document.getElementById(id), TODAY=new Date(), CURRENT_YEAR=TODAY.getFullYear();
-const blank=()=>({games:[],plans:[],sessions:[],psplus:[],goal:{games:20,hours:300}});
+const blank=()=>({games:[],plans:[],sessions:[],psplus:[],annualEntries:[],wishlist:[],goal:{games:20,hours:300}});
 let db=load(),year=CURRENT_YEAR,month=TODAY.getMonth(),diaryMonth=new Date(TODAY.getFullYear(),TODAY.getMonth(),1),selectedDay=dateKey(TODAY),rawgMode="library",rawgResults=[];
-function load(){try{const d=JSON.parse(localStorage.getItem(KEY)||localStorage.getItem("ps-backlog-v4")||localStorage.getItem("ps-backlog-v3")||"null");return {...blank(),...(d||{}),goal:{...blank().goal,...(d?.goal||{})}}}catch{return blank()}}
+function load(){try{const d=JSON.parse(localStorage.getItem(KEY)||localStorage.getItem("ps-backlog-v4")||localStorage.getItem("ps-backlog-v3")||"null"),out={...blank(),...(d||{}),goal:{...blank().goal,...(d?.goal||{})}};out.annualEntries=Array.isArray(out.annualEntries)?out.annualEntries:[];out.wishlist=Array.isArray(out.wishlist)?out.wishlist:[];const legacyAnnual=out.games.filter(g=>g.source==="Ajout bilan annuel");for(const g of legacyAnnual){if(!out.annualEntries.some(e=>e.title===g.title&&e.platform===g.platform&&e.date===(g.completedAt||""))){out.annualEntries.push({id:g.id,title:g.title,platform:g.platform,hours:+g.hours||0,rating:g.rating??"",cover:g.cover||"",date:g.completedAt||`${CURRENT_YEAR}-12-31`,rank:out.annualEntries.length})}}out.games=out.games.filter(g=>g.source!=="Ajout bilan annuel").map(g=>({...g,status:g.status==="En pause"?"En attente":g.status}));return out}catch{return blank()}}
 function save(){localStorage.setItem(KEY,JSON.stringify(db));render()}
 function id(){return crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random().toString(16).slice(2)}
 function esc(v=""){return String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
@@ -19,7 +19,7 @@ function card(g){const hltb=g.hltb?`HLTB ${g.hltb} h`:"";const src=g.source||"Ac
 function renderLibrary(){
  let q=$("searchInput").value.toLowerCase(),s=$("statusFilter").value,p=$("platformFilter").value;
  let list=db.games.filter(g=>(!q||(g.title||"").toLowerCase().includes(q))&&(s==="Tous"||g.status===s)&&(p==="Toutes"||g.platform===p));
- const statuses=["En cours","À jouer","En pause","Terminé","Abandonné"];
+ const statuses=["En cours","En attente","À jouer","Terminé","Abandonné"];
  const owned=g=>(g.source||"Achat")==="Achat"||!(g.source||"").toLowerCase().includes("ps plus");
  const sourceGroups=[["Jeux possédés",g=>owned(g)],["PlayStation Plus",g=>!owned(g)]];
  $("librarySections").innerHTML=statuses.filter(st=>s==="Tous"||s===st).map(st=>{
@@ -52,7 +52,7 @@ function renderHome(){
  $("homeDone").textContent=yearDone();const next=db.games.filter(g=>g.status==="À jouer").sort((a,b)=>({Haute:0,Normale:1,Basse:2}[a.priority]??1)-({Haute:0,Normale:1,Basse:2}[b.priority]??1)||(a.priorityOrder??9999)-(b.priorityOrder??9999))[0];$("homeNext").innerHTML=next?`<div class="next-priority" data-open-game="${next.id}"><div class="next-priority-cover" style="${next.cover?`background-image:url('${esc(next.cover)}')`:""}">${next.cover?"":esc(next.title.slice(0,2))}</div><div><strong>${esc(next.title)}</strong><small>${esc(next.priority||"Normale")} priorité</small></div></div>`:"Aucun jeu";
  $("homeStats").innerHTML=`<article class="stat-card"><span class="stat-label">JEUX EN BIBLIOTHÈQUE</span><strong>${db.games.length}</strong></article><article class="stat-card"><span class="stat-label">HEURES CETTE ANNÉE</span><strong>${yearHours().toFixed(1)} h</strong></article><article class="stat-card"><span class="stat-label">JEUX TERMINÉS</span><strong>${yearDone()}</strong></article><article class="stat-card"><span class="stat-label">JEUX EN COURS</span><strong>${active.length}</strong></article>`;
  document.querySelectorAll("[data-open-game]").forEach(x=>x.onclick=()=>editGame(x.dataset.openGame));
- document.querySelectorAll("[data-fast-status]").forEach(x=>x.onclick=e=>{e.stopPropagation();const g=game(x.dataset.fastStatus);if(g){g.status="En pause";g.statusHistory=g.statusHistory||[];g.statusHistory.push({from:"En cours",to:"En pause",date:dateKey(TODAY)});save()}});
+ document.querySelectorAll("[data-fast-status]").forEach(x=>x.onclick=e=>{e.stopPropagation();const g=game(x.dataset.fastStatus);if(g){g.status="En attente";g.statusHistory=g.statusHistory||[];g.statusHistory.push({from:"En cours",to:"En pause",date:dateKey(TODAY)});save()}});
 }
 function renderPriority(){
  const filter=$("priorityFilter")?.value||"Toutes";
@@ -62,17 +62,32 @@ function renderPriority(){
  document.querySelectorAll("[data-start-game]").forEach(b=>b.onclick=()=>{const g=game(b.dataset.startGame);if(g){const old=g.status;g.status="En cours";g.startedAt=g.startedAt||dateKey(TODAY);g.statusHistory=g.statusHistory||[];g.statusHistory.push({from:old,to:"En cours",date:dateKey(TODAY)});save()}});
 }
 $("priorityFilter")?.addEventListener("change",renderPriority);
+function annualEntryCard(g,i){
+ return `<div class="annual-row" draggable="true" data-annual-id="${esc(g.id)}"><b>${String(i+1).padStart(2,"0")}</b><div class="annual-cover" style="${g.cover?`background-image:url('${esc(g.cover)}')`:""}"></div><div class="annual-game"><strong>${esc(g.title)}</strong><small>${esc(g.platform||"")} · ${(+g.hours||0).toFixed(1)} h jouées</small></div><strong class="annual-rating">${g.rating!==""&&g.rating!=null?`${g.rating}/10`:"—"}</strong><div class="annual-order"><button class="icon-btn" data-rank-up="${esc(g.id)}" aria-label="Monter">↑</button><button class="icon-btn" data-rank-down="${esc(g.id)}" aria-label="Descendre">↓</button></div><button class="icon-btn annual-edit" data-edit-annual="${esc(g.id)}" aria-label="Modifier">✎</button></div>`
+}
 function renderAnnual(){
  $("annualYear").textContent=annualYear;
- const sessions=db.sessions.filter(s=>s.date?.startsWith(String(annualYear))),hours=sessions.reduce((a,s)=>a+(+s.minutes||0),0)/60;
- const completed=db.games.filter(g=>g.status==="Terminé"&&String(g.completedAt||"").startsWith(String(annualYear)));
+ const sessions=db.sessions.filter(s=>String(s.date||"").startsWith(String(annualYear)));
+ const sessionHours=sessions.reduce((a,s)=>a+(+s.minutes||0),0)/60;
+ const entries=db.annualEntries.filter(g=>String(g.date||"").startsWith(String(annualYear)));
+ const entryHours=entries.reduce((a,g)=>a+(+g.hours||0),0);
+ const hours=sessionHours+entryHours;
+ const completed=entries.slice().sort((a,b)=>(a.rank??9999)-(b.rank??9999));
  const avg=completed.filter(g=>g.rating!==""&&g.rating!=null).map(g=>+g.rating);
- $("annualStats").innerHTML=`<article class="stat-card"><span class="stat-label">JEUX TERMINÉS</span><strong>${completed.length}</strong></article><article class="stat-card"><span class="stat-label">HEURES JOUÉES</span><strong>${hours.toFixed(1)} h</strong></article><article class="stat-card"><span class="stat-label">MOYENNE DES NOTES</span><strong>${avg.length?(avg.reduce((a,b)=>a+b,0)/avg.length).toFixed(1):"—"}/10</strong></article><article class="stat-card"><span class="stat-label">SESSIONS</span><strong>${sessions.length}</strong></article>`;
- $("annualRanking").innerHTML=completed.sort((a,b)=>(+b.rating||0)-(+a.rating||0)).map((g,i)=>`<div class="annual-row"><b>${String(i+1).padStart(2,"0")}</b><div class="annual-cover" style="${g.cover?`background-image:url('${esc(g.cover)}')`:""}"></div><div class="annual-game"><strong>${esc(g.title)}</strong><small>${esc(g.platform||"")} · ${(+g.hours||0).toFixed(1)} h jouées</small></div><strong class="annual-rating">${g.rating?`${g.rating}/10`:"—"}</strong></div>`).join("")||'<p class="small-note">Aucun jeu terminé enregistré pour cette année.</p>';
- $("annualChart").innerHTML=Array.from({length:12},(_,m)=>{let v=sessions.filter(s=>s.date?.startsWith(monthKey(annualYear,m))).reduce((a,s)=>a+(+s.minutes||0),0)/60;return `<div class="chart-month"><span>${new Date(annualYear,m,1).toLocaleDateString("fr-FR",{month:"short"})}</span><div><i style="width:${Math.min(100,v/Math.max(1,...Array.from({length:12},(_,n)=>sessions.filter(s=>s.date?.startsWith(monthKey(annualYear,n))).reduce((a,s)=>a+(+s.minutes||0),0)/60))*100)}%"></i></div><b>${v.toFixed(1)}h</b></div>`}).join("");
+ const started=db.games.filter(g=>["En cours","En attente","En pause"].includes(g.status)&&String(g.startedAt||"").startsWith(String(annualYear)));
+ const abandoned=db.games.filter(g=>g.status==="Abandonné"&&String((g.statusHistory||[]).slice(-1)[0]?.date||g.startedAt||"").startsWith(String(annualYear)));
+ $("annualStats").innerHTML=`<article class="stat-card"><span class="stat-label">JEUX TERMINÉS</span><strong>${completed.length}</strong></article><article class="stat-card"><span class="stat-label">HEURES JOUÉES</span><strong>${hours.toFixed(1)} h</strong><small>${sessionHours.toFixed(1)} h journal + ${entryHours.toFixed(1)} h saisies au bilan</small></article><article class="stat-card"><span class="stat-label">MOYENNE DES NOTES</span><strong>${avg.length?(avg.reduce((a,b)=>a+b,0)/avg.length).toFixed(1):"—"}/10</strong></article><article class="stat-card"><span class="stat-label">SESSIONS JOURNAL</span><strong>${sessions.length}</strong></article>`;
+ $("annualRanking").innerHTML=completed.map((g,i)=>annualEntryCard(g,i)).join("")||'<p class="small-note">Aucun jeu terminé enregistré pour cette année.</p>';
+ $("annualUnfinished").innerHTML=started.map((g,i)=>annualGameLibraryCard(g,i)).join("")||'<p class="small-note">Aucun jeu commencé non terminé cette année.</p>';
+ $("annualAbandoned").innerHTML=abandoned.map((g,i)=>annualGameLibraryCard(g,i)).join("")||'<p class="small-note">Aucun jeu abandonné enregistré cette année.</p>';
+ document.querySelectorAll("[data-edit-annual]").forEach(b=>b.onclick=()=>editAnnualEntry(b.dataset.editAnnual));document.querySelectorAll("[data-rank-up],[data-rank-down]").forEach(b=>b.onclick=()=>{const id=b.dataset.rankUp||b.dataset.rankDown,arr=completed.slice(),from=arr.findIndex(x=>x.id===id),to=from+(b.dataset.rankUp?-1:1);if(from<0||to<0||to>=arr.length)return;[arr[from],arr[to]]=[arr[to],arr[from]];arr.forEach((x,n)=>{const rec=db.annualEntries.find(z=>z.id===x.id);if(rec)rec.rank=n});save()});document.querySelectorAll("#annualUnfinished [data-open-game],#annualAbandoned [data-open-game]").forEach(b=>b.onclick=()=>editGame(b.dataset.openGame));
+ let drag=null;document.querySelectorAll("[data-annual-id]").forEach(el=>{el.ondragstart=()=>{drag=el.dataset.annualId;el.classList.add("dragging")};el.ondragend=()=>el.classList.remove("dragging");el.ondragover=e=>e.preventDefault();el.ondrop=e=>{e.preventDefault();let target=el.dataset.annualId;if(!drag||drag===target)return;let ids=completed.map(x=>x.id),a=ids.indexOf(drag),b=ids.indexOf(target);ids.splice(b,0,ids.splice(a,1)[0]);ids.forEach((id,n)=>{let x=db.annualEntries.find(z=>z.id===id);if(x)x.rank=n});save()}});
+ $("annualChart").innerHTML=Array.from({length:12},(_,m)=>{let k=monthKey(annualYear,m),sv=sessions.filter(s=>String(s.date||"").startsWith(k)).reduce((a,s)=>a+(+s.minutes||0),0)/60,ev=entries.filter(e=>String(e.date||"").startsWith(k)).reduce((a,e)=>a+(+e.hours||0),0),v=sv+ev;return `<div class="chart-month"><span>${new Date(annualYear,m,1).toLocaleDateString("fr-FR",{month:"short"})}</span><div><i style="width:${Math.min(100,v/Math.max(1,...Array.from({length:12},(_,n)=>{let mk=monthKey(annualYear,n);return sessions.filter(s=>String(s.date||"").startsWith(mk)).reduce((a,s)=>a+(+s.minutes||0),0)/60+entries.filter(e=>String(e.date||"").startsWith(mk)).reduce((a,e)=>a+(+e.hours||0),0)}))*100)}%"></i></div><b>${v.toFixed(1)}h</b></div>`}).join("");
 }
+function annualGameLibraryCard(g,i){return `<div class="annual-row"><b>${String(i+1).padStart(2,"0")}</b><div class="annual-cover" style="${g.cover?`background-image:url('${esc(g.cover)}')`:""}"></div><div class="annual-game"><strong>${esc(g.title)}</strong><small>${esc(g.platform||"")} · ${esc(g.status)}</small></div><button class="icon-btn" data-open-game="${esc(g.id)}" aria-label="Modifier">✎</button></div>`}
+
 let annualYear=CURRENT_YEAR;
-function render(){renderLibrary();renderPlanner();renderDiary();renderPSPlus();renderHome();renderPriority();renderAnnual()}
+function render(){renderLibrary();renderWishlist();renderPlanner();renderDiary();renderPSPlus();renderHome();renderPriority();renderAnnual()}
 function tab(t){document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.tab===t));document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));$(t+"Panel").classList.add("active")}
 document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>tab(b.dataset.tab));
 function openGame(){ $("gameForm").reset();$("gameId").value="";$("gameDialogTitle").textContent="Ajouter un jeu";$("deleteGame").hidden=true;$("gameHours").value=0;$("gameDialog").showModal()}
@@ -101,6 +116,7 @@ async function searchRawg(q){const key=localStorage.getItem(RAWG_KEY);if(!key){$
 function renderRawgResults(){$("rawgResults").innerHTML=rawgResults.map((g,i)=>`<article class="rawg-result"><img src="${esc(g.background_image)}" alt="" loading="lazy"><div class="rawg-result-info"><strong>${esc(g.name)}</strong><small>${esc(g.chosenPlatform)} · ${esc(g.released||"Date inconnue")}</small><button type="button" class="secondary-btn" data-rawg-select="${i}">${rawgMode==="plan"?"Ajouter et planifier":"Ajouter à ma bibliothèque"}</button></div></article>`).join("");document.querySelectorAll("[data-rawg-select]").forEach(b=>b.onclick=()=>selectRawg(+b.dataset.rawgSelect))}
 function selectRawg(i){
  const r=rawgResults[i];if(!r)return;
+ if(rawgMode==="wishlist"){const exists=db.wishlist.find(x=>x.title.toLowerCase()===r.name.toLowerCase()&&x.platform===r.chosenPlatform);if(!exists)db.wishlist.push({id:id(),title:r.name,platform:r.chosenPlatform,priority:"Normale",cover:r.background_image,notes:"Ajouté via RAWG",rawgId:r.id});$("rawgSearchDialog").close();save();return}
  if(rawgMode==="annual"){
    $("annualGameForm").reset();
    $("annualTitle").value=r.name;
@@ -129,10 +145,25 @@ $("closeRawgSearch").onclick=()=>$("rawgSearchDialog").close();
 if("serviceWorker"in navigator&&location.protocol!=="file:")addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
 render();
 
+
+function renderWishlist(){
+ $("wishlistGrid").innerHTML=db.wishlist.map(w=>`<article class="game-card wishlist-card" data-wishlist-id="${esc(w.id)}"><div class="game-cover" ${w.cover?`style="background-image:url('${esc(w.cover)}')"`:""}>${w.cover?"":esc(w.title.slice(0,2))}</div><div class="game-body"><div class="game-top"><span class="platform">${esc(w.platform||"PS5")}</span><span>${esc(w.priority||"Normale")}</span></div><h3>${esc(w.title)}</h3><button class="secondary-btn" data-wishlist-edit="${esc(w.id)}">Modifier</button></div></article>`).join("")||'<p class="small-note">Ta wishlist est vide pour le moment.</p>';
+ document.querySelectorAll("[data-wishlist-edit]").forEach(b=>b.onclick=()=>editWishlist(b.dataset.wishlistEdit));
+}
+function openWishlist(w=null){$("wishlistForm").reset();$("wishlistId").value=w?.id||"";$("wishlistDialogTitle").textContent=w?"Modifier un jeu":"Ajouter un jeu";$("wishlistTitle").value=w?.title||"";$("wishlistPlatform").value=w?.platform||"PS5";$("wishlistPriority").value=w?.priority||"Normale";$("wishlistCover").value=w?.cover||"";$("wishlistNotes").value=w?.notes||"";$("wishlistDelete").hidden=!w;$("wishlistDialog").showModal()}
+function editWishlist(i){const w=db.wishlist.find(x=>x.id===i);if(w)openWishlist(w)}
+$("wishlistAdd").onclick=()=>openWishlist();$("wishlistSearchRawg").onclick=()=>openRawg("wishlist");
+$("wishlistClose").onclick=$("wishlistCancel").onclick=()=>$("wishlistDialog").close();
+$("wishlistDelete").onclick=()=>{const i=$("wishlistId").value;if(i&&confirm("Supprimer de la wishlist ?")){db.wishlist=db.wishlist.filter(x=>x.id!==i);$("wishlistDialog").close();save()}};
+$("wishlistForm").onsubmit=e=>{e.preventDefault();let i=$("wishlistId").value,w={id:i||id(),title:$("wishlistTitle").value.trim(),platform:$("wishlistPlatform").value,priority:$("wishlistPriority").value,cover:$("wishlistCover").value,notes:$("wishlistNotes").value};let old=db.wishlist.find(x=>x.id===i);if(old)Object.assign(old,w);else db.wishlist.push(w);$("wishlistDialog").close();save()};
+
 $("homeQuickSession").onclick=()=>$("addSessionBtn").click();
 $("homeGoAnnual").onclick=()=>tab("annual");
 $("annualPrev").onclick=()=>{annualYear--;renderAnnual()};
 $("annualNext").onclick=()=>{annualYear++;renderAnnual()};
-$("annualAdd").onclick=()=>{$("annualGameForm").reset();$("annualDate").value=dateKey(TODAY);$("annualGameDialog").showModal()};
+$("annualAdd").onclick=()=>openAnnualEntry();
 $("annualClose").onclick=$("annualCancel").onclick=()=>$("annualGameDialog").close();
-$("annualGameForm").onsubmit=e=>{e.preventDefault();let title=$("annualTitle").value.trim(),date=$("annualDate").value;let g=db.games.find(x=>x.title.toLowerCase()===title.toLowerCase()&&x.platform===$("annualPlatform").value);if(!g){g={id:id(),title,platform:$("annualPlatform").value,status:"Terminé",hours:+$("annualHours").value||0,hltb:0,hltbExtras:0,hltbComplete:0,priority:"Normale",genre:"",cover:$("annualCover").value,rating:$("annualRating").value,source:"Ajout bilan annuel",completedAt:date,startedAt:"",statusHistory:[{from:"Nouveau",to:"Terminé",date}]};db.games.push(g)}else{g.statusHistory=g.statusHistory||[];g.statusHistory.push({from:g.status,to:"Terminé",date});g.status="Terminé";g.completedAt=date;g.rating=$("annualRating").value;g.hours=+$("annualHours").value||g.hours;g.cover=$("annualCover").value||g.cover}annualYear=+date.slice(0,4);$("annualGameDialog").close();save()};
+function openAnnualEntry(entry=null){$("annualGameForm").reset();$("annualEntryId").value=entry?.id||"";$("annualDialogTitle").textContent=entry?"Modifier le jeu terminé":"Ajouter un jeu terminé";$("annualTitle").value=entry?.title||"";$("annualPlatform").value=entry?.platform||"PS5";$("annualHours").value=entry?.hours??0;$("annualRating").value=entry?.rating??"";$("annualDate").value=entry?.date|| (annualYear===CURRENT_YEAR?dateKey(TODAY):`${annualYear}-12-31`);$("annualCover").value=entry?.cover||"";$("annualDelete").hidden=!entry;$("annualSubmit").textContent=entry?"Enregistrer":"Ajouter au bilan";$("annualGameDialog").showModal()}
+function editAnnualEntry(id){const entry=db.annualEntries.find(x=>x.id===id);if(entry)openAnnualEntry(entry)}
+$("annualDelete").onclick=()=>{const id=$("annualEntryId").value;if(id&&confirm("Supprimer ce jeu du bilan annuel ?")){db.annualEntries=db.annualEntries.filter(x=>x.id!==id);$("annualGameDialog").close();save()}};
+$("annualGameForm").onsubmit=e=>{e.preventDefault();let eid=$("annualEntryId").value,date=$("annualDate").value,old=db.annualEntries.find(x=>x.id===eid),entry={id:eid||id(),title:$("annualTitle").value.trim(),platform:$("annualPlatform").value,hours:+$("annualHours").value||0,rating:$("annualRating").value,cover:$("annualCover").value,date,rank:old?.rank??db.annualEntries.filter(x=>String(x.date||"").startsWith(String(date.slice(0,4)))).length};if(old)Object.assign(old,entry);else db.annualEntries.push(entry);annualYear=+date.slice(0,4);$("annualGameDialog").close();save()};

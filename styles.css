@@ -106,3 +106,18 @@ body>.app-shell>main>.stats-grid{display:none!important}
 
 .annual-actions{display:flex;gap:8px;flex-wrap:wrap}
 @media(max-width:520px){.annual-actions{width:100%}.annual-actions button{flex:1}}
+
+/* v1.3 annual records and wishlist */
+.annual-row[draggable="true"]{cursor:grab}
+.annual-row.dragging{opacity:.4}
+.annual-edit{min-width:36px;min-height:36px;padding:4px}
+#wishlistPanel .game-card{cursor:pointer}
+#wishlistPanel .game-body .secondary-btn{margin-top:8px}
+#annualUnfinished,#annualAbandoned{display:grid;gap:6px}
+#annualUnfinished .annual-row,#annualAbandoned .annual-row{cursor:pointer}
+#annualGameDialog .dialog-actions{flex-wrap:wrap}
+#annualDelete{margin-right:auto}
+@media(max-width:560px){.annual-row{gap:7px;padding:8px}.annual-row .annual-rating{font-size:12px}.annual-row .icon-btn{min-width:32px;padding:4px}}
+
+.annual-order{display:flex;flex-direction:column;gap:3px}
+.annual-order .icon-btn{min-width:30px;min-height:25px;padding:1px 5px;line-height:1}
