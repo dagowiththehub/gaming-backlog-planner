@@ -13,7 +13,7 @@ function remainingForGame(g){const ref=hltbReference(g);return ref>0?Math.max(0,
 function monthHours(k){return db.plans.filter(p=>p.month===k).reduce((a,p)=>a+(+p.hours||0),0)}
 function yearSessions(){return db.sessions.filter(s=>String(s.date||"").startsWith(String(CURRENT_YEAR)))}
 function yearHours(){return yearSessions().reduce((a,s)=>a+(+s.minutes||0),0)/60}
-function yearDone(){return db.games.filter(g=>g.status==="Terminé"&&String(g.completedAt||"").startsWith(String(CURRENT_YEAR))).length}
+function yearDone(){const inLibrary=db.games.filter(g=>g.status==="Terminé"&&String(g.completedAt||"").startsWith(String(CURRENT_YEAR))).length;const inHall=db.annualEntries.filter(g=>String(g.date||"").startsWith(String(CURRENT_YEAR))).length;return inLibrary+inHall}
 function renderStats(){$("statTotal").textContent=db.games.length;$("statDone").textContent=yearDone();$("statSessions").textContent=yearSessions().length;$("statHours").innerHTML=yearHours().toFixed(1)+'<span class="unit">h</span>'}
 function card(g){const hltb=g.hltb?`HLTB ${g.hltb} h`:"";const src=g.source||"Achat";return `<article class="game-card" data-id="${esc(g.id)}"><div class="game-cover" ${g.cover?`style="background-image:url('${esc(g.cover)}')"`:""}>${g.cover?"":esc((g.title||"??").slice(0,2).toUpperCase())}</div><div class="game-body"><div class="game-top"><span class="platform">${esc(g.platform||"PS5")}</span><span>${hltb}</span></div><h3>${esc(g.title)}</h3><div class="game-meta"><span class="status" data-status="${esc(g.status)}">${esc(g.status)}</span><span>${(+g.hours||0)} h jouées</span></div><div class="game-meta" style="margin-top:7px"><span>${esc(src)}</span><span>${g.rating?("★".repeat(+g.rating)):""}</span></div></div></article>`}
 function renderLibrary(){
