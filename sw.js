@@ -1,4 +1,4 @@
-const CACHE_NAME = "phantom-backlog-v1-5-0";
+const CACHE_NAME = "phantom-backlog-v1-5-1";
 const APP_SHELL = ["./", "./index.html", "./styles.css", "./app.js", "./manifest.webmanifest", "./icon.svg"];
 self.addEventListener("install", event => event.waitUntil((async () => {
   const cache = await caches.open(CACHE_NAME);

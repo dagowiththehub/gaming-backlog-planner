@@ -1,4 +1,4 @@
-# Gaming Backlog Planner v1.5.0
+# Gaming Backlog Planner v1.5.1
 
 Correctif accueil : le compteur « Jeux terminés cette année » additionne désormais les jeux terminés présents dans la bibliothèque ET les entrées saisies indépendamment dans le Hall of Fame. Les entrées du Hall of Fame ne sont pas ajoutées à la bibliothèque.
 

@@ -140,3 +140,8 @@ body>.app-shell>main>.stats-grid{display:none!important}
 
 /* Respecte les éléments masqués même lorsqu’une classe définit display:grid. */
 [hidden]{display:none!important}
+
+/* v1.5.1: render library covers as real image elements */
+.game-cover{position:relative;overflow:hidden}
+.game-cover-image{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.cover-score{z-index:2}
