@@ -1,5 +1,8 @@
-# Gaming Backlog Planner v1.3.1
+# Gaming Backlog Planner v1.4
 
-Correctif accueil : le compteur « Jeux terminés cette année » additionne désormais les jeux terminés présents dans la bibliothèque ET les entrées saisies indépendamment dans le Hall of Fame. Les entrées du Hall of Fame ne sont pas ajoutées à la bibliothèque.
+- HLTB displayed as a small refined chip in game cards.
+- Ratings /10 shown as a circular badge over the bottom-right of the cover: green 8–10, yellow 5–7.9, red below 5. No more stars.
+- Session logging first displays only games with status « En cours », as cover tiles. « Choisir un autre jeu » expands to all library games.
+- RAWG library search stays open after adding a game; already-added results are disabled to avoid duplicates.
 
-Mise à jour : exporter les données JSON, décompresser l'archive, remplacer les 7 fichiers dans la racine du dépôt GitHub, commit, attendre GitHub Pages puis actualiser Chrome / relancer la PWA. La clé locale `ps-backlog-v5` est conservée.
+Update: export JSON, unzip, replace the 7 root files in GitHub, commit, wait for Pages deployment, then refresh Chrome / relaunch PWA. Local storage key `ps-backlog-v5` is unchanged.
