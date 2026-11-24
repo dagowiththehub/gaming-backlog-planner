@@ -121,3 +121,21 @@ body>.app-shell>main>.stats-grid{display:none!important}
 
 .annual-order{display:flex;flex-direction:column;gap:3px}
 .annual-order .icon-btn{min-width:30px;min-height:25px;padding:1px 5px;line-height:1}
+
+/* v1.4 polish */
+.game-cover{position:relative;overflow:hidden}
+.hltb-chip{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;background:#252631;border:1px solid #424553;color:#bfc5d4;font-size:11px;font-weight:700;letter-spacing:.02em;white-space:nowrap}
+.cover-score{position:absolute;right:9px;bottom:9px;width:43px;height:43px;border-radius:50%;display:grid;place-items:center;font-size:15px;font-weight:900;color:#101116;border:3px solid rgba(255,255,255,.88);box-shadow:0 2px 10px #0009}
+.score-great{background:#66cc33}.score-good{background:#f0c84b}.score-low{background:#e85b58;color:#fff}
+.session-game-picker{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:8px 0 12px}
+.session-game-tile{position:relative;display:flex;flex-direction:column;align-items:stretch;gap:5px;padding:5px;border:1px solid #383943;border-radius:9px;background:#19191f;color:#f4f4f6;text-align:left;min-width:0}
+.session-game-tile.selected{border:2px solid #ef1233;background:#28151b;padding:4px}
+.session-game-art{display:block;width:100%;aspect-ratio:3/4;background:#292a32 center/cover;border-radius:5px;display:grid;place-items:center;font-weight:900}
+.session-game-title{font-size:11px;line-height:1.25;font-weight:700;min-height:2.5em;overflow:hidden}
+.session-selected-mark{position:absolute;right:8px;top:8px;width:22px;height:22px;border-radius:50%;background:#ed1232;color:white;display:grid;place-items:center;font-weight:900}
+.session-other-toggle{margin:0 0 12px}
+.rawg-result-info button:disabled{opacity:.55;cursor:default}
+@media(max-width:390px){.session-game-picker{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Respecte les éléments masqués même lorsqu’une classe définit display:grid. */
+[hidden]{display:none!important}
