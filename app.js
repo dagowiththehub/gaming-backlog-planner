@@ -143,8 +143,8 @@ function selectRawg(i){
  let g=db.games.find(x=>x.title.toLowerCase()===r.name.toLowerCase()&&x.platform===r.chosenPlatform);
  if(!g){g={id:id(),title:r.name,platform:r.chosenPlatform,status:"À jouer",startedAt:"",statusHistory:[],hours:0,hltb:0,hltbExtras:0,hltbComplete:0,priority:"Normale",genre:(r.genres||[]).map(x=>x.name).join(", "),cover:r.background_image,rating:"",source:"À définir",notes:"Ajouté via RAWG",completedAt:"",rawgId:r.id,rawgSlug:r.slug};db.games.unshift(g)}
  else{if(!g.cover)g.cover=r.background_image;g.rawgId=g.rawgId||r.id}
- if(rawgMode==="plan"){const m=$("planMonth").value||`${year}-${String(month+1).padStart(2,"0")}`;db.plans=db.plans.filter(p=>!(p.gameId===g.id&&p.month===m));db.plans.push({id:id(),gameId:g.id,month:m,hours:+$("planHours").value||10,note:$("planNote").value||""});year=+m.slice(0,4);month=+m.slice(5,7)-1;$("planDialog").close()}
  if(rawgMode==="library"){save();renderRawgResults();$("rawgSearchStatus").textContent=`${r.name} ajouté. Tu peux en ajouter un autre depuis ces résultats.`;return}
+ if(rawgMode==="plan"){const m=$("planMonth").value||`${year}-${String(month+1).padStart(2,"0")}`;db.plans=db.plans.filter(p=>!(p.gameId===g.id&&p.month===m));db.plans.push({id:id(),gameId:g.id,month:m,hours:+$("planHours").value||10,note:$("planNote").value||""});year=+m.slice(0,4);month=+m.slice(5,7)-1;$("planDialog").close()}
  $("rawgSearchDialog").close();save()
 }
 $("rawgLibraryBtn").onclick=()=>openRawg("library");$("planSearchRawgBtn").onclick=()=>openRawg("plan");$("annualSearchRawg").onclick=()=>openRawg("annual");

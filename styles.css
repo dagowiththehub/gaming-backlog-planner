@@ -122,6 +122,7 @@ body>.app-shell>main>.stats-grid{display:none!important}
 .annual-order{display:flex;flex-direction:column;gap:3px}
 .annual-order .icon-btn{min-width:30px;min-height:25px;padding:1px 5px;line-height:1}
 
+
 /* v1.4 polish */
 .game-cover{position:relative;overflow:hidden}
 .hltb-chip{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;background:#252631;border:1px solid #424553;color:#bfc5d4;font-size:11px;font-weight:700;letter-spacing:.02em;white-space:nowrap}
